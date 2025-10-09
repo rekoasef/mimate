@@ -2,6 +2,7 @@
 import { ReactNode } from 'react';
 import Header from './_components/Header';
 import Footer from './_components/Footer';
+import WhatsAppButton from './_components/WhatsAppButton'; // Asegúrate de que esta línea exista
 
 export default function PublicLayout({ children }: { children: ReactNode }) {
   return (
@@ -11,6 +12,9 @@ export default function PublicLayout({ children }: { children: ReactNode }) {
         {children}
       </main>
       <Footer />
+      
+      {/* El botón se coloca aquí para asegurar que esté por encima de todo */}
+      <WhatsAppButton /> 
     </div>
   );
 }

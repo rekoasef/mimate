@@ -5,7 +5,6 @@ import { useState, useMemo } from 'react'
 import { deleteProduct } from './actions'
 import ProductModal from './ProductModal'
 
-// Definimos los tipos de datos que la página recibirá como props
 type Category = { id: number; name: string };
 type Product = { 
   id: number; 
@@ -21,7 +20,6 @@ type Product = {
   is_featured: boolean; 
 };
 
-// Icono simple para el estado 'visible'
 function VisibilityIcon({ isVisible }: { isVisible: boolean }) {
   return isVisible ? (
     <span className="inline-block h-4 w-4 rounded-full bg-green-500" title="Visible"></span>
@@ -30,7 +28,6 @@ function VisibilityIcon({ isVisible }: { isVisible: boolean }) {
   );
 }
 
-// El componente ahora recibe los datos iniciales como props
 export default function ProductsPageClient({ initialProducts, categories }: { initialProducts: Product[], categories: Category[] }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -43,7 +40,6 @@ export default function ProductsPageClient({ initialProducts, categories }: { in
   }
   const closeModal = () => setIsModalOpen(false);
   
-  // Lógica de filtrado en tiempo real
   const filteredProducts = useMemo(() => {
     return initialProducts.filter(product => {
       const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -99,7 +95,8 @@ export default function ProductsPageClient({ initialProducts, categories }: { in
                   <button onClick={() => openModal(product)} title="Editar" className="p-2 hover:bg-gray-200 rounded-md">✏️</button>
                   <form action={deleteProduct}>
                     <input type="hidden" name="id" value={product.id} />
-                    <input type="hidden" name="image_url" value={product.image_url} />
+                    {/* --- CORRECCIÓN AQUÍ --- */}
+                    <input type="hidden" name="image_url" value={product.image_url || ''} />
                     <button type="submit" title="Eliminar" className="p-2 hover:bg-gray-200 rounded-md">🗑️</button>
                   </form>
                 </td>
