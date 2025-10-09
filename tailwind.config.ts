@@ -1,3 +1,4 @@
+// tailwind.config.ts
 import type { Config } from 'tailwindcss'
 
 const config: Config = {
@@ -8,11 +9,23 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+      colors: {
+        brand: {
+          primary: '#5D7A68',
+          secondary: '#3A4D40',
+          accent: '#8C6E54',
+          bg: '#EAE0D1', // Cambiamos a un fondo casi blanco, más elegante
+          surface: '#FFFFFF',
+          text: '#3A4D40',
+          'text-light': '#F1F2EB'
+        }
       },
+      // --- AÑADE ESTE BLOQUE DE FUENTES ---
+      fontFamily: {
+        serif: ['Playfair Display', 'serif'],
+        sans: ['Montserrat', 'sans-serif'],
+      },
+      // --- FIN DEL BLOQUE ---
     },
   },
   plugins: [],
