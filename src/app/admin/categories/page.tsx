@@ -3,6 +3,7 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import AddCategoryForm from './AddCategoryForm'
 import { deleteCategory } from './actions'
+export const dynamic = 'force-dynamic';
 
 export default async function CategoriesPage() {
   const supabase = createServerComponentClient({ cookies })

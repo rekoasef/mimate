@@ -2,6 +2,7 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import ProductsPageClient from './page-client' // Importamos nuestro componente de cliente
+export const dynamic = 'force-dynamic';
 
 // Este es un Server Component que se ejecuta primero y obtiene los datos.
 export default async function ProductsPage() {
