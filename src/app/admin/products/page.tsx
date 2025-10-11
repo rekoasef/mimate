@@ -1,12 +1,18 @@
 // src/app/admin/products/page.tsx
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createServerClient } from '@supabase/ssr' // Importación actualizada
 import { cookies } from 'next/headers'
-import ProductsPageClient from './page-client' // Importamos nuestro componente de cliente
+import ProductsPageClient from './page-client' 
+
 export const dynamic = 'force-dynamic';
 
 // Este es un Server Component que se ejecuta primero y obtiene los datos.
 export default async function ProductsPage() {
-  const supabase = createServerComponentClient({ cookies });
+  const cookieStore = cookies()
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    { cookies: { get: (name) => cookieStore.get(name)?.value } }
+  ) // Nueva forma de crear el cliente
   
   // Hacemos las dos peticiones de datos al mismo tiempo para más eficiencia
   const [productsResponse, categoriesResponse] = await Promise.all([

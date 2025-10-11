@@ -1,25 +1,36 @@
 // src/app/(public)/catalogo/page.tsx
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createServerClient } from '@supabase/ssr'; // Importación actualizada
 import { cookies } from 'next/headers';
 import ProductCard from '../_components/ProductCard';
 import PaginationControls from '../_components/PaginationControls';
+import Link from 'next/link';
+
 export const dynamic = 'force-dynamic';
 
 function getPublicUrl(path: string | null) {
   if (!path) return '/placeholder.png';
-  const supabase = createServerComponentClient({ cookies });
+  const cookieStore = cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    { cookies: { get: (name) => cookieStore.get(name)?.value } }
+  );
   const { data } = supabase.storage.from('product_images').getPublicUrl(path);
   return data.publicUrl;
 }
 
 export default async function CatalogoPage({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
-  const supabase = createServerComponentClient({ cookies });
+  const cookieStore = cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    { cookies: { get: (name) => cookieStore.get(name)?.value } }
+  );
   
   const page = searchParams['page'] ? Number(searchParams['page']) : 1;
   const pageSize = 8;
   const offset = (page - 1) * pageSize;
 
-  // Consulta simplificada sin filtros de categoría
   const { data: products, count } = await supabase
     .from('products')
     .select('id, name, sale_price, image_url', { count: 'exact' })
@@ -36,8 +47,6 @@ export default async function CatalogoPage({ searchParams }: { searchParams: { [
     <div>
       <h1 className="font-serif text-4xl font-bold text-brand-secondary mb-12 text-center">Nuestro Catálogo</h1>
 
-      {/* La barra de filtros ha sido eliminada */}
-
       {products && products.length > 0 ? (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-16">
@@ -51,7 +60,6 @@ export default async function CatalogoPage({ searchParams }: { searchParams: { [
               />
             ))}
           </div>
-          
           <PaginationControls hasNextPage={hasNextPage} hasPrevPage={hasPrevPage} />
         </>
       ) : (

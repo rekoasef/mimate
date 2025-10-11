@@ -1,12 +1,17 @@
 // src/app/admin/products/actions.ts
 'use server'
 
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createServerClient } from '@supabase/ssr' // Importación actualizada
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 
 export async function upsertProduct(formData: FormData) {
-  const supabase = createServerComponentClient({ cookies })
+  const cookieStore = cookies()
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    { cookies: { get: (name) => cookieStore.get(name)?.value } }
+  ) // Nueva forma de crear el cliente
   
   const id = formData.get('id') as string | null;
   const name = formData.get('name') as string
@@ -25,18 +30,14 @@ export async function upsertProduct(formData: FormData) {
   const current_image_url = formData.get('current_image_url') as string;
   const delete_image = formData.get('delete_image') === 'on';
 
-  // --- CORRECCIÓN AQUÍ ---
-  // Añadimos explícitamente el tipo 'string | null'
   let image_url: string | null = current_image_url;
 
   if (delete_image && current_image_url) {
-    const { error: deleteError } = await supabase.storage.from('product_images').remove([current_image_url]);
-    if (deleteError) console.error('Error deleting image:', deleteError);
+    await supabase.storage.from('product_images').remove([current_image_url]);
     image_url = null;
   } else if (image && image.size > 0) {
     if (current_image_url) {
-        const { error: deleteError } = await supabase.storage.from('product_images').remove([current_image_url]);
-        if (deleteError) console.error('Error deleting old image:', deleteError);
+        await supabase.storage.from('product_images').remove([current_image_url]);
     }
     const { data: imageData, error: uploadError } = await supabase.storage.from('product_images').upload(`${Date.now()}_${image.name}`, image);
     if (uploadError) {
@@ -63,7 +64,12 @@ export async function upsertProduct(formData: FormData) {
 export async function deleteProduct(formData: FormData) {
     const id = formData.get('id') as string;
     const imageUrl = formData.get('image_url') as string;
-    const supabase = createServerComponentClient({ cookies });
+    const cookieStore = cookies()
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      { cookies: { get: (name) => cookieStore.get(name)?.value } }
+    ) // Nueva forma de crear el cliente
 
     if (imageUrl) {
         await supabase.storage.from('product_images').remove([imageUrl]);
