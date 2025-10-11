@@ -36,11 +36,10 @@ export default function ProductModal({ product, categories, onClose }: { product
           {product && <input type="hidden" name="id" value={product.id} />}
           {product && <input type="hidden" name="current_image_url" value={product.image_url || ''} />}
 
-          {/* ... (resto de los campos del formulario sin cambios) ... */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input name="name" placeholder="Nombre" defaultValue={product?.name} required className="p-2 border rounded" />
-            <select name="category_id" defaultValue={product?.category_id} required className="p-2 border rounded">
-              <option value="">Selecciona una categoría</option>
+            <select name="category_id" defaultValue={product?.category_id || ''} className="p-2 border rounded">
+              <option value="">Sin categoría</option>
               {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
             </select>
             <input name="sale_price" type="number" step="0.01" placeholder="Precio Venta" defaultValue={product?.sale_price} required className="p-2 border rounded" />
@@ -49,7 +48,6 @@ export default function ProductModal({ product, categories, onClose }: { product
           </div>
           <textarea name="description" placeholder="Descripción" defaultValue={product?.description || ''} className="w-full p-2 border rounded"></textarea>
           
-          {/* --- CAMBIOS EN LA GESTIÓN DE IMAGEN --- */}
           <div>
             <label className="block text-sm font-medium text-gray-700">Imagen del producto</label>
             <input name="image" type="file" accept="image/*" className="w-full text-sm" />
@@ -63,7 +61,6 @@ export default function ProductModal({ product, categories, onClose }: { product
               </div>
             )}
           </div>
-          {/* --- FIN DE CAMBIOS --- */}
 
           <div className="flex items-center gap-8">
             <label className="flex items-center gap-2"><input type="checkbox" name="is_featured" defaultChecked={product?.is_featured} /> Destacado</label>
