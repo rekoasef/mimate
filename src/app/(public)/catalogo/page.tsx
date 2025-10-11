@@ -3,6 +3,7 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import ProductCard from '../_components/ProductCard';
 import PaginationControls from '../_components/PaginationControls';
+export const dynamic = 'force-dynamic';
 
 function getPublicUrl(path: string | null) {
   if (!path) return '/placeholder.png';

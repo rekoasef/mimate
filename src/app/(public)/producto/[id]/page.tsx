@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FaWhatsapp } from 'react-icons/fa';
+export const dynamic = 'force-dynamic';
 
 // Función para obtener la URL pública de la imagen
 function getPublicUrl(path: string | null) {

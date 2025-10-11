@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 import Link from 'next/link';
 import Image from 'next/image';
 import FeaturedCarousel from './_components/FeaturedCarousel'; // Importamos el carrusel
+export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
   const supabase = createServerComponentClient({ cookies });
