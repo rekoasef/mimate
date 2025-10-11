@@ -15,7 +15,6 @@ export async function upsertProduct(formData: FormData) {
   const cost_price = parseFloat(formData.get('cost_price') as string)
   const stock = parseInt(formData.get('stock') as string, 10)
   
-  // --- LÓGICA ACTUALIZADA PARA LA CATEGORÍA ---
   const categoryIdValue = formData.get('category_id') as string;
   const category_id = categoryIdValue ? parseInt(categoryIdValue, 10) : null;
   
@@ -26,6 +25,8 @@ export async function upsertProduct(formData: FormData) {
   const current_image_url = formData.get('current_image_url') as string;
   const delete_image = formData.get('delete_image') === 'on';
 
+  // --- CORRECCIÓN AQUÍ ---
+  // Añadimos explícitamente el tipo 'string | null'
   let image_url: string | null = current_image_url;
 
   if (delete_image && current_image_url) {
