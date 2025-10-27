@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import FeaturedCarousel from './_components/FeaturedCarousel'; // Ensure this path is correct
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion'; // Import Variants type
 
 // --- Helper Functions (No changes needed) ---
 function getPublicUrl(path: string | null) {
@@ -42,24 +42,40 @@ export default function HomePage() {
     fetchFeaturedProducts();
   }, [supabase]);
 
-  // --- Animation Variants (No changes needed here) ---
-  const heroContainerVariants = {
+  // --- Animation Variants ---
+  const heroContainerVariants: Variants = { // Added Variants type
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.3 } }
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.3
+      }
+    }
   };
-  const heroImageVariants = {
+
+  // CORRECTED: Added Variants type here
+  const heroImageVariants: Variants = {
     hidden: { opacity: 0, scale: 0.95 },
+    // Type checking now confirms "easeOut" is acceptable if typed correctly
     visible: { opacity: 1, scale: 1, transition: { duration: 0.8, ease: "easeOut" } }
   };
-  const heroTextContainerVariants = {
+
+  const heroTextContainerVariants: Variants = { // Added Variants type
     hidden: {},
-    visible: { transition: { delayChildren: 0.5, staggerChildren: 0.07 } }
+    visible: {
+      transition: {
+        delayChildren: 0.5,
+        staggerChildren: 0.07
+      }
+    }
   };
-  const letterVariants = {
+
+  const letterVariants: Variants = { // Added Variants type
     hidden: { opacity: 0 },
     visible: { opacity: 1 }
   };
-  const otherTextVariants = {
+
+  const otherTextVariants: Variants = { // Added Variants type
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
   };
@@ -111,21 +127,17 @@ export default function HomePage() {
             >
               En Mimate, creemos que cada mate es un momento para vos. Seleccionamos y creamos los mejores productos con calidad, diseño y la mejor onda.
             </motion.p>
-
-            {/* --- CORRECTION HERE --- */}
-            {/* Button Animation - Changed div to motion.div */}
+            {/* Button Animation */}
             <motion.div
               variants={otherTextVariants}
               initial="hidden"
               animate="visible"
-              transition={{ delay: preciseDelay + 0.1 }} // Slightly after paragraph
+              transition={{ delay: preciseDelay + 0.1 }}
             >
               <Link href="/catalogo" className="mt-8 inline-block bg-brand-primary text-brand-text-light font-bold py-3 px-8 rounded-full text-lg hover:bg-brand-secondary transition-colors">
                 Descubrir Colección
               </Link>
             </motion.div>
-            {/* --- END CORRECTION --- */}
-
           </motion.div>
         </div>
       </motion.section>
@@ -145,7 +157,7 @@ export default function HomePage() {
 
       {/* Contact Section */}
       <section className="text-center py-20 my-12 bg-white rounded-md">
-        <h2 className="font-serif text-4xl font-bold text-brand-secondary">¿Hablamos?</h2>
+         <h2 className="font-serif text-4xl font-bold text-brand-secondary">¿Hablamos?</h2>
         <p className="text-lg mt-4 max-w-2xl mx-auto text-gray-600">
           Para consultas, ventas mayoristas o simplemente para charlar, no dudes en escribirnos. Estaremos encantados de ayudarte.
         </p>
