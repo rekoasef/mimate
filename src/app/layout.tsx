@@ -1,10 +1,8 @@
 // src/app/layout.tsx
 import './globals.css'
 import type { Metadata } from 'next'
-// Importamos las nuevas fuentes
 import { Montserrat, Playfair_Display } from 'next/font/google'
 
-// Configuramos las fuentes
 const montserrat = Montserrat({ subsets: ['latin'], variable: '--font-montserrat' })
 const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' })
 
@@ -20,6 +18,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
+      {/* 1. Eliminamos el atributo 'style' que añadía la imagen de fondo.
+        2. Añadimos de nuevo la clase 'bg-brand-bg' para usar el color de Tailwind.
+      */}
       <body className={`${montserrat.variable} ${playfair.variable} font-sans bg-brand-bg text-brand-text`}>
         {children}
       </body>
