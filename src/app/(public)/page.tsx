@@ -84,7 +84,7 @@ export default function HomePage() {
             className="relative w-full aspect-square md:aspect-[3/4] md:h-auto rounded-md overflow-hidden"
             variants={heroImageVariants}
           >
-            <Image src="/hero-main.jpg" alt="Mate de Mimate con estilo minimalista" fill style={{ objectFit: 'cover' }} priority className="object-cover object-center" />
+            <Image src="/mimate2.jpg" alt="Mate de Mimate con estilo minimalista" fill style={{ objectFit: 'cover' }} priority className="object-cover object-center" />
           </motion.div>
 
           {/* Text Block Animation */}
