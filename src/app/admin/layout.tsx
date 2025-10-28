@@ -27,7 +27,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
       <aside className="w-64 bg-brand-surface p-4 border-r border-gray-200">
         <div className="mb-8">
           <Link href="/admin">
-            <Image src="/logo.png" alt="Logo Mimate" width={150} height={50} priority />
+            <Image src="/logo.png" alt="Logo Mimate" width={200} height={150} priority />
           </Link>
         </div>
         <nav>

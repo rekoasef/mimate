@@ -13,19 +13,19 @@ const config: Config = {
         brand: {
           primary: '#5D7A68',
           secondary: '#3A4D40',
-          accent: '#8C6E54',
-          bg: '#EAE0D1', // Cambiamos a un fondo casi blanco, más elegante
+          accent: '#5D4037',    // Marrón oscuro
+          bg: '#EAE0D1',        // Beige claro
           surface: '#FFFFFF',
-          text: '#3A4D40',
-          'text-light': '#F1F2EB'
+          text: '#3A4D40',      // Verde Oscuro (texto base para admin)
+          'text-light': '#F1F2EB', // Blanco crema
+          'text-dark-brown': '#5D4037' // Marrón Oscuro (para títulos públicos)
         }
       },
-      // --- AÑADE ESTE BLOQUE DE FUENTES ---
       fontFamily: {
-        serif: ['Playfair Display', 'serif'],
-        sans: ['Montserrat', 'sans-serif'],
+        // ACTUALIZADO: Usa la variable CSS de Fredoka One para 'serif'
+        serif: ['var(--font-fredoka)', 'serif'],
+        sans: ['var(--font-montserrat)', 'sans-serif'], // Usamos la variable para Montserrat también
       },
-      // --- FIN DEL BLOQUE ---
     },
   },
   plugins: [],

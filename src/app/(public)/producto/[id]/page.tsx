@@ -1,5 +1,5 @@
 // src/app/(public)/producto/[id]/page.tsx
-import { createServerClient } from '@supabase/ssr'; // Importación actualizada
+import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
@@ -38,13 +38,15 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
     notFound();
   }
 
-  const phoneNumber = 'TU_NUMERO_DE_WHATSAPP'; // Reemplaza con tu número
+  const phoneNumber = '543471339026'; // Replace with your number
   const message = encodeURIComponent(`¡Hola! Me gustaría saber más sobre este producto: ${product.name}`);
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
 
   return (
-    <div className="grid md:grid-cols-2 gap-8 lg:gap-12 py-8">
-      <div className="relative h-96 md:h-[480px] lg:h-[520px] rounded-lg overflow-hidden shadow-lg flex items-center justify-center">
+    // Added container mx-auto px-6 here for consistent padding
+    <div className="container mx-auto px-6 grid md:grid-cols-2 gap-8 lg:gap-12 py-8">
+      {/* Image column: REMOVED shadow-lg */}
+      <div className="relative h-96 md:h-[480px] lg:h-[520px] rounded-lg overflow-hidden flex items-center justify-center">
         <Image
           src={getPublicUrl(product.image_url)}
           alt={product.name}
@@ -56,15 +58,18 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
         />
       </div>
 
-      <div className="flex flex-col justify-center bg-brand-bg p-8 rounded-lg shadow-xl">
+      {/* Info column: REMOVED bg-brand-bg, p-8, rounded-lg, shadow-xl */}
+      <div className="flex flex-col justify-center">
+        {/* Adjusted text colors for contrast */}
         <span className="text-sm font-semibold text-brand-primary mb-2 block">{product.category?.name}</span>
-        <h1 className="font-serif text-4xl lg:text-5xl font-bold text-brand-secondary leading-tight mb-4">{product.name}</h1>
-        <p className="mt-2 text-brand-text text-lg leading-relaxed">{product.description}</p>
-        
-        <div className="my-8 border-t border-b border-gray-300 py-4">
-          <p className="text-4xl lg:text-5xl font-extrabold text-brand-secondary">${product.sale_price.toFixed(2)}</p>
+        <h1 className="font-serif text-4xl lg:text-5xl font-bold text-white leading-tight mb-4">{product.name}</h1>
+        <p className="mt-2 text-gray-200 text-lg leading-relaxed">{product.description}</p>
+
+        {/* Removed border styling, adjusted text color */}
+        <div className="my-8 py-4">
+          <p className="text-4xl lg:text-5xl font-extrabold text-white">${product.sale_price.toFixed(2)}</p>
         </div>
-        
+
         <div>
           <Link href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 w-full sm:w-auto justify-center px-8 py-4 bg-green-500 text-white font-bold rounded-full hover:bg-green-600 transition-transform hover:scale-105">
             <FaWhatsapp size={24} />

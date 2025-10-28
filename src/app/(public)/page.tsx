@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import FeaturedCarousel from './_components/FeaturedCarousel'; // Ensure this path is correct
-import { motion, Variants } from 'framer-motion'; // Import Variants type
+import { motion, Variants } from 'framer-motion';
 
 // --- Helper Functions (No changes needed) ---
 function getPublicUrl(path: string | null) {
@@ -42,40 +42,38 @@ export default function HomePage() {
     fetchFeaturedProducts();
   }, [supabase]);
 
-  // --- Animation Variants ---
-  const heroContainerVariants: Variants = { // Added Variants type
+  // --- Animation Variants (Restored for title animation) ---
+  const heroContainerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.3
+        staggerChildren: 0.3 // Delay between image and text block
       }
     }
   };
 
-  // CORRECTED: Added Variants type here
   const heroImageVariants: Variants = {
     hidden: { opacity: 0, scale: 0.95 },
-    // Type checking now confirms "easeOut" is acceptable if typed correctly
     visible: { opacity: 1, scale: 1, transition: { duration: 0.8, ease: "easeOut" } }
   };
 
-  const heroTextContainerVariants: Variants = { // Added Variants type
+  const heroTextContainerVariants: Variants = {
     hidden: {},
     visible: {
       transition: {
-        delayChildren: 0.5,
-        staggerChildren: 0.07
+        delayChildren: 0.5, // Start text animation after image
+        staggerChildren: 0.07 // Delay between each letter
       }
     }
   };
 
-  const letterVariants: Variants = { // Added Variants type
+  const letterVariants: Variants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1 }
+    visible: { opacity: 1 } // Simple fade-in for each letter
   };
 
-  const otherTextVariants: Variants = { // Added Variants type
+  const otherTextVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
   };
@@ -87,39 +85,46 @@ export default function HomePage() {
   const preciseDelay = textBlockBaseDelay + titleAnimationDuration;
 
   return (
-    <div className="space-y-24">
+    // Manteniendo tu estructura div principal si la prefieres
+    <div>
       <motion.section
-        className="bg-brand-bg pt-12"
+        className="pt-12" // Removed bg-brand-bg if body has global background
         variants={heroContainerVariants}
         initial="hidden"
         animate="visible"
       >
-        <div className="container mx-auto grid md:grid-cols-2 gap-12 items-center">
-          {/* Image Animation */}
+        <div className="container mx-auto grid md:grid-cols-2 gap-12 items-center mb-24">
           <motion.div
             className="relative w-full aspect-square md:aspect-[3/4] md:h-auto rounded-md overflow-hidden"
             variants={heroImageVariants}
           >
-            <Image src="/mimate2.jpg" alt="Mate de Mimate con estilo minimalista" fill style={{ objectFit: 'cover' }} priority className="object-cover object-center" />
+            {/* Usando tu imagen mimate4.jpg */}
+            <Image
+              src="/mimate4.jpg"
+              alt="Mate de Mimate con estilo minimalista"
+              fill
+              style={{ objectFit: 'cover', objectPosition: 'center 65%' }} // Mantenemos el ajuste de posición
+              priority
+              className="object-cover"
+            />
           </motion.div>
 
-          {/* Text Block Animation */}
           <motion.div
             className="text-left py-8 md:py-0"
-            variants={heroTextContainerVariants}
+            variants={heroTextContainerVariants} // Orquesta la animación letra por letra
           >
-            {/* Typewriter Title */}
-            <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold text-brand-secondary leading-tight whitespace-pre-line">
+            {/* --- ANIMACIÓN RESTAURADA --- */}
+            <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold text-brand-text-dark-brown text-outline-white leading-tight whitespace-pre-line pt-2"> {/* Usando tus clases de estilo */}
               {titleChars.map((char, index) => (
                 <motion.span key={index} variants={letterVariants}>
                   {char}
                 </motion.span>
               ))}
             </h1>
+            {/* --- FIN ANIMACIÓN --- */}
 
-            {/* Paragraph Animation */}
             <motion.p
-              className="mt-6 text-base sm:text-lg max-w-lg text-gray-700"
+              className="mt-6 text-base sm:text-lg max-w-lg text-gray-200" // Usando tus clases de estilo
               variants={otherTextVariants}
               initial="hidden"
               animate="visible"
@@ -127,14 +132,14 @@ export default function HomePage() {
             >
               En Mimate, creemos que cada mate es un momento para vos. Seleccionamos y creamos los mejores productos con calidad, diseño y la mejor onda.
             </motion.p>
-            {/* Button Animation */}
             <motion.div
               variants={otherTextVariants}
               initial="hidden"
               animate="visible"
               transition={{ delay: preciseDelay + 0.1 }}
             >
-              <Link href="/catalogo" className="mt-8 inline-block bg-brand-primary text-brand-text-light font-bold py-3 px-8 rounded-full text-lg hover:bg-brand-secondary transition-colors">
+              {/* Usando tus clases de estilo */}
+              <Link href="/catalogo" className="mt-8 inline-block bg-brand-accent text-brand-text-light font-bold py-3 px-8 rounded-full text-lg hover:bg-opacity-80 transition-colors">
                 Descubrir Colección
               </Link>
             </motion.div>
@@ -142,26 +147,26 @@ export default function HomePage() {
         </div>
       </motion.section>
 
-      {/* Featured Products Carousel */}
-      <section>
+      {/* Sección Productos Destacados (Usando tus clases de estilo) */}
+      <section className="container mx-auto mb-24">
         <div className="text-center mb-12">
-          <h2 className="font-serif text-4xl font-bold text-brand-secondary">Productos Destacados</h2>
-          <p className="mt-2 text-gray-500">Una selección especial de nuestros favoritos.</p>
+            <h2 className="font-serif text-4xl font-bold text-brand-text-dark-brown text-outline-white">Productos Destacados</h2>
+            <p className="mt-2 text-gray-300">Una selección especial de nuestros favoritos.</p>
         </div>
         {featuredProducts && featuredProducts.length > 0 ? (
           <FeaturedCarousel products={featuredProducts} />
         ) : (
-          <p className="text-center text-gray-500">Cargando productos destacados...</p>
+          <p className="text-center text-gray-400">Cargando productos destacados...</p>
         )}
       </section>
 
-      {/* Contact Section */}
-      <section className="text-center py-20 my-12 bg-white rounded-md">
-         <h2 className="font-serif text-4xl font-bold text-brand-secondary">¿Hablamos?</h2>
-        <p className="text-lg mt-4 max-w-2xl mx-auto text-gray-600">
+      {/* Sección Contacto (Usando tus clases de estilo) */}
+      <section className="container mx-auto text-center py-20 my-12 rounded-md mb-24">
+         <h2 className="font-serif text-4xl font-bold text-brand-text-dark-brown text-outline-white">¿Hablamos?</h2>
+        <p className="text-lg mt-4 max-w-2xl mx-auto text-gray-200">
           Para consultas, ventas mayoristas o simplemente para charlar, no dudes en escribirnos. Estaremos encantados de ayudarte.
         </p>
-        <a href="mailto:mimatearms@gmail.com" className="mt-8 inline-block font-semibold text-lg text-brand-primary hover:underline">
+        <a href="mailto:mimatearms@gmail.com" className="mt-8 inline-block font-semibold text-lg text-gray-200 hover:underline"> {/* Usando tus clases de estilo */}
           mimatearms@gmail.com
         </a>
       </section>

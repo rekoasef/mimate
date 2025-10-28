@@ -1,5 +1,5 @@
 // src/app/(public)/catalogo/page.tsx
-import { createServerClient } from '@supabase/ssr'; // Importación actualizada
+import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import ProductCard from '../_components/ProductCard';
 import PaginationControls from '../_components/PaginationControls';
@@ -44,8 +44,9 @@ export default async function CatalogoPage({ searchParams }: { searchParams: { [
   const hasPrevPage = page > 1;
 
   return (
-    <div>
-      <h1 className="font-serif text-4xl font-bold text-brand-secondary mb-12 text-center">Nuestro Catálogo</h1>
+    <div className="container mx-auto px-6 py-12">
+      {/* CAMBIO: Se añadió la clase text-outline-white */}
+      <h1 className="font-serif text-4xl font-bold mb-12 text-center text-brand-text-dark-brown text-outline-white">Nuestro Catálogo</h1>
 
       {products && products.length > 0 ? (
         <>
@@ -60,10 +61,11 @@ export default async function CatalogoPage({ searchParams }: { searchParams: { [
               />
             ))}
           </div>
+          
           <PaginationControls hasNextPage={hasNextPage} hasPrevPage={hasPrevPage} />
         </>
       ) : (
-        <p className="text-center text-gray-500">No se encontraron productos.</p>
+        <p className="text-center text-white/80">No se encontraron productos.</p> 
       )}
     </div>
   );
