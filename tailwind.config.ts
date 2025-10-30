@@ -27,7 +27,8 @@ const config: Config = {
         sans: ['var(--font-montserrat)', 'sans-serif'], // Usamos la variable para Montserrat también
       },
       backgroundImage: {
-        'main-pattern': "url('/new-background-pattern.jpg')", // Usamos el nombre de tu nueva imagen
+        'desktop-pattern': "url('/background-desktop-pattern.jpg')",
+        'mobile-pattern': "url('/background-mobile-pattern.jpg')",
       },
     },
   },
