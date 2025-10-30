@@ -6,28 +6,29 @@ import WhatsAppButton from './_components/WhatsAppButton';
 
 export default function PublicLayout({ children }: { children: ReactNode }) {
   return (
-    // Aplicamos el nuevo fondo y eliminamos el overlay de opacidad global
+    // 1. Aplicamos el fondo y el layout base.
+    //    Quitamos 'text-white' para que cada página defina su color de texto.
     <div 
-      className="relative flex flex-col min-h-screen text-white 
-                 bg-main-pattern bg-no-repeat bg-cover bg-center bg-fixed" 
-      // El estilo inline ya no es necesario
+      className="relative flex flex-col min-h-screen 
+                 bg-main-pattern bg-no-repeat bg-cover bg-center bg-fixed"
     >
-      {/* Eliminamos el div del overlay oscuro global (bg-black opacity-40)
-          porque con el nuevo fondo más claro, ya no debería ser necesario
-          y el texto blanco debería leerse bien directamente sobre él. */}
+      {/* 2. ELIMINADO: El overlay oscuro (div con bg-black opacity-40) ya no está. */}
       
-      {/* Contenido (Header, Main, Footer) - ahora con un <main> sin el recuadro oscuro */}
-      <header className="z-10 sticky top-0">
+      {/* 3. Header fijo y por encima de todo */}
+      <header className="sticky top-0 z-50 w-full">
         <Header /> 
       </header>
-      {/* Eliminamos las clases bg-black/10 backdrop-blur-xs rounded-lg my-8 de <main>
-          Esto es lo que causaba la "sombra cuadrada" */}
-      <main className="flex-grow container mx-auto px-6 py-8 z-10"> 
+
+      {/* 4. Main sin fondo oscuro ni blur. Esta es la "sombra cuadrada" que eliminamos. */}
+      <main className="flex-grow container mx-auto px-6 py-8 relative z-10"> 
         {children}
       </main>
+
+      {/* 5. Footer con z-index */}
       <footer className="z-10">
         <Footer />
       </footer>
+
       <WhatsAppButton /> 
     </div>
   );
