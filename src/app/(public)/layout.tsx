@@ -6,40 +6,29 @@ import WhatsAppButton from './_components/WhatsAppButton';
 
 export default function PublicLayout({ children }: { children: ReactNode }) {
   return (
-    // Div principal con el fondo de imagen
+    // Aplicamos el nuevo fondo y eliminamos el overlay de opacidad global
     <div 
-      className="relative flex flex-col min-h-screen text-white" // 'relative' para el overlay 'absolute'
-      style={{
-        backgroundImage: 'url(/pattern-background-green.jpg)',
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'cover',
-        backgroundAttachment: 'fixed',
-        backgroundPosition: 'center center'
-      }}
+      className="relative flex flex-col min-h-screen text-white 
+                 bg-main-pattern bg-no-repeat bg-cover bg-center bg-fixed" 
+      // El estilo inline ya no es necesario
     >
-      {/* Overlay oscuro semi-transparente */}
-      <div className="absolute inset-0 bg-black opacity-40 z-0"></div> {/* Ajusta 'opacity-40' si quieres */}
+      {/* Eliminamos el div del overlay oscuro global (bg-black opacity-40)
+          porque con el nuevo fondo más claro, ya no debería ser necesario
+          y el texto blanco debería leerse bien directamente sobre él. */}
       
-      {/* --- CORRECCIÓN AQUÍ --- */}
-      {/* Envolvemos Header en <header> y le aplicamos z-10 */}
-      <header className="z-10 sticky top-0"> {/* Hacemos el header wrapper sticky */}
+      {/* Contenido (Header, Main, Footer) - ahora con un <main> sin el recuadro oscuro */}
+      <header className="z-10 sticky top-0">
         <Header /> 
       </header>
-      {/* --- FIN CORRECCIÓN --- */}
-
-      {/* Main sigue igual con z-10 */}
-      <main className="flex-grow container mx-auto px-6 py-8 bg-black/10 backdrop-blur-xs rounded-lg my-8 z-10"> 
+      {/* Eliminamos las clases bg-black/10 backdrop-blur-xs rounded-lg my-8 de <main>
+          Esto es lo que causaba la "sombra cuadrada" */}
+      <main className="flex-grow container mx-auto px-6 py-8 z-10"> 
         {children}
       </main>
-
-      {/* --- CORRECCIÓN AQUÍ --- */}
-      {/* Envolvemos Footer en <footer> y le aplicamos z-10 */}
       <footer className="z-10">
         <Footer />
       </footer>
-      {/* --- FIN CORRECCIÓN --- */}
-
-      <WhatsAppButton /> {/* Este ya debería tener z-index alto */}
+      <WhatsAppButton /> 
     </div>
   );
 }

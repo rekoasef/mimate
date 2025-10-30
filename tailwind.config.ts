@@ -26,6 +26,9 @@ const config: Config = {
         serif: ['var(--font-fredoka)', 'serif'],
         sans: ['var(--font-montserrat)', 'sans-serif'], // Usamos la variable para Montserrat también
       },
+      backgroundImage: {
+        'main-pattern': "url('/new-background-pattern.jpg')", // Usamos el nombre de tu nueva imagen
+      },
     },
   },
   plugins: [],
