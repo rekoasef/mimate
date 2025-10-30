@@ -6,27 +6,26 @@ import WhatsAppButton from './_components/WhatsAppButton';
 
 export default function PublicLayout({ children }: { children: ReactNode }) {
   return (
-    // 1. Aplicamos fondo móvil por defecto (bg-mobile-pattern)
-    //    y el fondo de escritorio a partir de 'md' (md:bg-desktop-pattern).
-    // 2. Establecemos el color de texto base en blanco/claro (text-white).
+    // 1. ELIMINADO 'bg-fixed' DE ESTA LÍNEA
     <div 
       className="relative flex flex-col min-h-screen text-white 
                  bg-mobile-pattern md:bg-desktop-pattern 
-                 bg-no-repeat bg-cover bg-center bg-fixed"
+                 bg-no-repeat bg-cover bg-center"
     >
-      {/* 3. ELIMINADO el overlay oscuro (div con bg-black opacity-40) */}
+      {/* 2. El overlay oscuro se mantiene por ahora para legibilidad */}
+      <div className="absolute inset-0 bg-black opacity-40 z-0"></div>
       
-      {/* 4. Header fijo y por encima de todo */}
+      {/* 3. Header fijo y por encima de todo */}
       <header className="sticky top-0 z-50 w-full">
         <Header /> 
       </header>
 
-      {/* 5. ELIMINADO el fondo oscuro del main (bg-black/10, backdrop-blur, etc.) */}
+      {/* 4. Main sin fondo oscuro ni blur */}
       <main className="flex-grow container mx-auto px-6 py-8 relative z-10"> 
         {children}
       </main>
 
-      {/* 6. Footer con z-index */}
+      {/* 5. Footer con z-index */}
       <footer className="z-10">
         <Footer />
       </footer>
