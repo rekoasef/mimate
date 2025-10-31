@@ -1,12 +1,13 @@
-/* src/app/(public)/public-layout.css  — Opción B */
+/* Opción B‑v2: no se hace cover, escala fija en px y
+   se repite SOLO en vertical para que no se corte. */
 
 :root {
-  /* Ajustá estos valores a gusto */
-  --bg-width-mobile: 1400px;   /* Sugerencia móvil: 1200–1600px */
-  --bg-width-desktop: 2000px;  /* Sugerencia desktop: 1800–2400px */
+  /* Escala de la ilustración */
+  --bg-width-mobile: 1400px;   /* móvil (te funcionó bien) */
+  --bg-width-desktop: 1600px;  /* ↓ bajá este valor para ver iconos más chicos en desktop */
 
-  /* Si necesitás mover el encuadre, podés cambiar estas posiciones */
-  --bg-pos-mobile: center top;     /* p. ej. "center -60px" para bajar el dibujo */
+  /* Encuadre */
+  --bg-pos-mobile: center top;
   --bg-pos-desktop: center top;
 }
 
@@ -14,44 +15,58 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  /* svh evita saltos en iOS al mostrar/ocultar la barra del navegador */
   min-height: 100svh;
   color: white;
 
-  /* Usá la imagen que prefieras. Si querés, podés poner la mobile aquí. */
   background-image: url('/background-desktop-pattern.jpg');
 
-  /* 👇 Clave de la opción B */
-  background-repeat: no-repeat;
+  /* Clave de B-v2 */
+  background-repeat: repeat-y;             /* para que no se corte hacia abajo */
   background-position: var(--bg-pos-mobile);
   background-size: var(--bg-width-mobile) auto;
 
-  /* iOS seguro */
-  background-attachment: scroll;
+  background-attachment: scroll;           /* iOS safe */
 }
 
-/* Desktop / tablet */
 @media (min-width: 768px) {
   .public-layout {
     background-position: var(--bg-pos-desktop);
     background-size: var(--bg-width-desktop) auto;
 
-    /* Si te gusta el efecto parallax, activalo.
-       Si no, dejalo en scroll y listo. */
+    /* Podés dejarlo scroll si no querés parallax */
     background-attachment: fixed;
   }
 }
 
-/* Hack adicional para Safari iOS: fuerza scroll y evita glitches */
+/* iOS Safari */
 @supports (-webkit-touch-callout: none) {
   .public-layout {
     background-attachment: scroll !important;
   }
 }
 
-/* Si el usuario prefiere menos movimiento, no fijar el fondo */
+/* Accesibilidad */
 @media (prefers-reduced-motion: reduce) {
   .public-layout {
     background-attachment: scroll !important;
+  }
+}
+/* Fondo solo para el héroe */
+.hero-bg {
+  background-image: url('/background-desktop-pattern.jpg');
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: var(--hero-bg-width, 1400px) auto;
+  background-attachment: scroll;
+
+  /* Altura del hero para que se vea completo sin corte */
+  min-height: clamp(520px, 85svh, 780px);
+}
+
+/* Ajustes por breakpoint */
+@media (min-width: 768px) {
+  .hero-bg {
+    background-size: var(--hero-bg-desktop, 1600px) auto; /* bajar para iconos más chicos */
+    background-attachment: fixed; /* opcional */
   }
 }
