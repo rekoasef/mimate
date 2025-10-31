@@ -1,0 +1,28 @@
+.public-layout {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  color: white;
+
+  background-image: url('/background-mobile-pattern.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: scroll; /* Fix para móviles */
+}
+
+/* Para pantallas medianas o más grandes (tablet/desktop) */
+@media (min-width: 768px) {
+  .public-layout {
+    background-image: url('/background-desktop-pattern.jpg');
+    background-attachment: fixed; /* Solo en desktop */
+  }
+}
+
+/* Hack adicional para Safari iOS */
+@supports (-webkit-touch-callout: none) {
+  .public-layout {
+    background-attachment: scroll !important;
+  }
+}
