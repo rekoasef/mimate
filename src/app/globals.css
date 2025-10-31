@@ -20,3 +20,8 @@
     -1px 1px 0 #fff,
     1px 1px 0 #fff;
 }
+
+html, body {
+  background-attachment: scroll;
+  -webkit-overflow-scrolling: touch;
+}
