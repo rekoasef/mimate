@@ -2,21 +2,29 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  /* usar unidades dinámicas para iOS (evita saltos por la barra del navegador) */
+  min-height: 100svh;
   color: white;
 
-  background-image: url('/background-mobile-pattern.jpg');
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  background-attachment: scroll; /* Fix para móviles */
+  /* Usa el mismo patrón en todas las vistas para mantener escala */
+  background-image: url('/background-desktop-pattern.jpg');
+  background-position: top center;
+
+  /* 👇 Clave para que no haga "zoom": repetimos y controlamos el tamaño del azulejo */
+  background-repeat: repeat;
+  /* ajustá este número hasta que te guste (480–640px suele ir bien) */
+  background-size: 560px auto;
+
+  /* iOS seguro */
+  background-attachment: scroll;
 }
 
-/* Para pantallas medianas o más grandes (tablet/desktop) */
+/* En tablet/desktop podés afinar el tamaño del patrón
+   (menos denso = azulejo más grande; más denso = azulejo más chico) */
 @media (min-width: 768px) {
   .public-layout {
-    background-image: url('/background-desktop-pattern.jpg');
-    background-attachment: fixed; /* Solo en desktop */
+    background-size: 640px auto;   /* ajustá a gusto */
+    background-attachment: fixed;  /* si querés el efecto parallax en desktop */
   }
 }
 
@@ -26,4 +34,3 @@
     background-attachment: scroll !important;
   }
 }
-
