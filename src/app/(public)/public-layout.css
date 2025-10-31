@@ -1,10 +1,9 @@
-/* Opción B‑v2: no se hace cover, escala fija en px y
-   se repite SOLO en vertical para que no se corte. */
+/* Opción B-v2: escala fija en px y repetición vertical para que no se corte. */
 
 :root {
   /* Escala de la ilustración */
-  --bg-width-mobile: 1400px;   /* móvil (te funcionó bien) */
-  --bg-width-desktop: 1600px;  /* ↓ bajá este valor para ver iconos más chicos en desktop */
+  --bg-width-mobile: 1400px;    /* te funcionó bien en móvil */
+  --bg-width-desktop: 1500px;   /* BAJALO para ver íconos más chicos en desktop */
 
   /* Encuadre */
   --bg-pos-mobile: center top;
@@ -15,30 +14,31 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  min-height: 100svh;
+  min-height: 100svh;           /* iOS safe */
   color: white;
 
   background-image: url('/background-desktop-pattern.jpg');
 
-  /* Clave de B-v2 */
-  background-repeat: repeat-y;             /* para que no se corte hacia abajo */
+  /* Clave: no usar cover; repetir sólo en Y para no “cortar” */
+  background-repeat: repeat-y;
   background-position: var(--bg-pos-mobile);
   background-size: var(--bg-width-mobile) auto;
 
-  background-attachment: scroll;           /* iOS safe */
+  background-attachment: scroll; /* iOS safe */
 }
 
+/* Tablet / Desktop */
 @media (min-width: 768px) {
   .public-layout {
     background-position: var(--bg-pos-desktop);
     background-size: var(--bg-width-desktop) auto;
 
-    /* Podés dejarlo scroll si no querés parallax */
+    /* Parallax opcional en desktop; dejalo en scroll si no lo querés */
     background-attachment: fixed;
   }
 }
 
-/* iOS Safari */
+/* Safari iOS fuerza scroll para evitar glitches */
 @supports (-webkit-touch-callout: none) {
   .public-layout {
     background-attachment: scroll !important;
@@ -49,24 +49,5 @@
 @media (prefers-reduced-motion: reduce) {
   .public-layout {
     background-attachment: scroll !important;
-  }
-}
-/* Fondo solo para el héroe */
-.hero-bg {
-  background-image: url('/background-desktop-pattern.jpg');
-  background-repeat: no-repeat;
-  background-position: center top;
-  background-size: var(--hero-bg-width, 1400px) auto;
-  background-attachment: scroll;
-
-  /* Altura del hero para que se vea completo sin corte */
-  min-height: clamp(520px, 85svh, 780px);
-}
-
-/* Ajustes por breakpoint */
-@media (min-width: 768px) {
-  .hero-bg {
-    background-size: var(--hero-bg-desktop, 1600px) auto; /* bajar para iconos más chicos */
-    background-attachment: fixed; /* opcional */
   }
 }
