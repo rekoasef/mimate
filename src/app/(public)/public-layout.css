@@ -26,3 +26,16 @@
     background-attachment: scroll !important;
   }
 }
+
+.public-layout {
+  background-attachment: scroll !important;
+  background-size: 100% auto;
+  background-position: top center;
+}
+
+@supports (-webkit-touch-callout: none) {
+  .public-layout {
+    min-height: -webkit-fill-available; /* Fix para viewport dinámico */
+    background-attachment: scroll !important;
+  }
+}
