@@ -1,35 +1,56 @@
+/* src/app/(public)/public-layout.css  — Opción B */
+
+:root {
+  /* Ajustá estos valores a gusto */
+  --bg-width-mobile: 1400px;   /* Sugerencia móvil: 1200–1600px */
+  --bg-width-desktop: 2000px;  /* Sugerencia desktop: 1800–2400px */
+
+  /* Si necesitás mover el encuadre, podés cambiar estas posiciones */
+  --bg-pos-mobile: center top;     /* p. ej. "center -60px" para bajar el dibujo */
+  --bg-pos-desktop: center top;
+}
+
 .public-layout {
   position: relative;
   display: flex;
   flex-direction: column;
-  /* usar unidades dinámicas para iOS (evita saltos por la barra del navegador) */
+  /* svh evita saltos en iOS al mostrar/ocultar la barra del navegador */
   min-height: 100svh;
   color: white;
 
-  /* Usa el mismo patrón en todas las vistas para mantener escala */
+  /* Usá la imagen que prefieras. Si querés, podés poner la mobile aquí. */
   background-image: url('/background-desktop-pattern.jpg');
-  background-position: top center;
 
-  /* 👇 Clave para que no haga "zoom": repetimos y controlamos el tamaño del azulejo */
-  background-repeat: repeat;
-  /* ajustá este número hasta que te guste (480–640px suele ir bien) */
-  background-size: 560px auto;
+  /* 👇 Clave de la opción B */
+  background-repeat: no-repeat;
+  background-position: var(--bg-pos-mobile);
+  background-size: var(--bg-width-mobile) auto;
 
   /* iOS seguro */
   background-attachment: scroll;
 }
 
-/* En tablet/desktop podés afinar el tamaño del patrón
-   (menos denso = azulejo más grande; más denso = azulejo más chico) */
+/* Desktop / tablet */
 @media (min-width: 768px) {
   .public-layout {
-    background-size: 640px auto;   /* ajustá a gusto */
-    background-attachment: fixed;  /* si querés el efecto parallax en desktop */
+    background-position: var(--bg-pos-desktop);
+    background-size: var(--bg-width-desktop) auto;
+
+    /* Si te gusta el efecto parallax, activalo.
+       Si no, dejalo en scroll y listo. */
+    background-attachment: fixed;
   }
 }
 
-/* Hack adicional para Safari iOS */
+/* Hack adicional para Safari iOS: fuerza scroll y evita glitches */
 @supports (-webkit-touch-callout: none) {
+  .public-layout {
+    background-attachment: scroll !important;
+  }
+}
+
+/* Si el usuario prefiere menos movimiento, no fijar el fondo */
+@media (prefers-reduced-motion: reduce) {
   .public-layout {
     background-attachment: scroll !important;
   }
