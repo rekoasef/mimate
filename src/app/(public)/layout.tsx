@@ -6,36 +6,38 @@ import WhatsAppButton from './_components/WhatsAppButton';
 
 export default function PublicLayout({ children }: { children: ReactNode }) {
   return (
-    // --- ESTA ES LA LÍNEA MÁGICA Y CORREGIDA ---
-    <div 
-      className="relative flex flex-col min-h-screen text-brand-text-light 
-                 bg-center bg-mobile-pattern bg-repeat bg-scroll 
-                 md:bg-desktop-pattern md:bg-no-repeat md:bg-cover md:bg-fixed"
-    >
-      {/* Desglose de la corrección:
-        - bg-mobile-pattern: Imagen por defecto (móvil)
-        - bg-repeat:         Repetir por defecto (móvil)
-        - bg-scroll:         Scroll por defecto (móvil)
-        - md:bg-desktop-pattern: Cambia la imagen en escritorio
-        - md:bg-no-repeat:       DEJA de repetir en escritorio
-        - md:bg-cover:           CUBRE la pantalla en escritorio
-        - md:bg-fixed:           DEJA fijo el fondo en escritorio
+    <div className="relative min-h-screen text-brand-text-light">
+      
+      <div 
+        className="fixed inset-0 z-0
+                   bg-mobile-pattern md:bg-desktop-pattern 
+                   bg-no-repeat bg-cover bg-center"
+      />
+      
+      {/* 3. AJUSTE AQUÍ: Cambiamos la opacidad del overlay */}
+      <div className="fixed inset-0 bg-black opacity-40 z-10" /> 
+      {/* Puedes probar con:
+          - opacity-10 (muy poco oscuro)
+          - opacity-20 (un poco oscuro)
+          - opacity-0 (elimina el overlay, es como si no estuviera)
+          - O simplemente borrar la línea entera del div si quieres quitarlo
       */}
-      
-      {/* ELIMINADO: El overlay 'bg-black opacity-40' */}
-      
-      <header className="sticky top-0 z-50 w-full">
-        <Header /> 
-      </header>
 
-      {/* ELIMINADO: El recuadro oscuro ('bg-black/10', 'backdrop-blur', etc.) */}
-      <main className="flex-grow container mx-auto px-6 py-8 relative z-10"> 
-        {children}
-      </main>
+      <div className="relative z-20 flex flex-col min-h-screen">
+        
+        <header className="sticky top-0 z-50 w-full">
+          <Header /> 
+        </header>
 
-      <footer className="z-10">
-        <Footer />
-      </footer>
+        <main className="flex-grow container mx-auto px-6 py-8"> 
+          {children}
+        </main>
+
+        <footer className="z-30">
+          <Footer />
+        </footer>
+        
+      </div>
 
       <WhatsAppButton /> 
     </div>
