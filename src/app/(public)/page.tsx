@@ -130,7 +130,9 @@ export default function HomePage() {
               animate="visible"
               transition={{ delay: preciseDelay }}
             >
-              En Mimate, creemos que cada mate es un momento para vos. Seleccionamos y creamos los mejores productos con calidad, diseño y la mejor onda.
+              En Mimate, sabemos que el mate es una costumbre, un encuentro y una forma de estar presente. 
+              Por eso seleccionamos cada producto personalmente, cuidando cada detalle y buscando en cada lugar lo mejor de nuestros artesanos.
+              Porque sabemos que un buen mate te acompaña en cada etapa de la vida.
             </motion.p>
             <motion.div
               variants={otherTextVariants}
@@ -162,9 +164,9 @@ export default function HomePage() {
 
       {/* Sección Contacto (Usando tus clases de estilo) */}
       <section className="container mx-auto text-center py-20 my-12 rounded-md mb-24">
-         <h2 className="font-serif text-4xl font-bold text-brand-text-dark-brown text-outline-white">¿Hablamos?</h2>
+        <h2 className="font-serif text-4xl font-bold text-brand-text-dark-brown text-outline-white">¿Hablamos?</h2>
         <p className="text-lg mt-4 max-w-2xl mx-auto text-gray-200">
-          Para consultas, ventas mayoristas o simplemente para charlar, no dudes en escribirnos. Estaremos encantados de ayudarte.
+          Para consultas, ventas minoristas o simplemente para charlar, no dudes en escribirnos. Estaremos encantados de ayudarte.
         </p>
         <a href="mailto:mimatearms@gmail.com" className="mt-8 inline-block font-semibold text-lg text-gray-200 hover:underline"> {/* Usando tus clases de estilo */}
           mimatearms@gmail.com
