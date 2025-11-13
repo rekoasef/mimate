@@ -27,14 +27,28 @@ export default async function CatalogoPage({ searchParams }: { searchParams: { [
     { cookies: { get: (name) => cookieStore.get(name)?.value } }
   );
   
-  const page = searchParams['page'] ? Number(searchParams['page']) : 1;
+  // 1. Leemos los parámetros de la URL
+  const page = Number(searchParams['page'] ?? '1');
   const pageSize = 8;
   const offset = (page - 1) * pageSize;
+  const selectedCategoryId = searchParams['categoria'] as string | undefined;
 
-  const { data: products, count } = await supabase
+  // 2. Obtenemos la lista de categorías para los botones de filtro
+  const { data: categories } = await supabase.from('categories').select('id, name');
+
+  // 3. Construimos la consulta de productos dinámicamente
+  let query = supabase
     .from('products')
     .select('id, name, sale_price, image_url', { count: 'exact' })
-    .eq('is_visible', true)
+    .eq('is_visible', true);
+
+  // ¡Añadimos el filtro de categoría si está seleccionado!
+  if (selectedCategoryId) {
+    query = query.eq('category_id', selectedCategoryId);
+  }
+
+  // 4. Ejecutamos la consulta final con el orden y la paginación
+  const { data: products, count } = await query
     .order('created_at', { ascending: false })
     .range(offset, offset + pageSize - 1);
   
@@ -43,10 +57,40 @@ export default async function CatalogoPage({ searchParams }: { searchParams: { [
   const hasNextPage = page < totalPages;
   const hasPrevPage = page > 1;
 
+  // 5. Función para crear URLs de filtro (mantiene la paginación si existe)
+  const createFilterURL = (categoryId?: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', '1'); // Reiniciamos a la pág 1 al cambiar de filtro
+    if (categoryId) {
+      params.set('categoria', categoryId);
+    } else {
+      params.delete('categoria');
+    }
+    return `/catalogo?${params.toString()}`;
+  };
+
   return (
     <div className="container mx-auto px-6 py-12">
-      {/* CAMBIO: Se añadió la clase text-outline-white */}
-      <h1 className="font-serif text-4xl font-bold mb-12 text-center text-brand-text-dark-brown text-outline-white">Nuestro Catálogo</h1>
+      <h1 className="font-serif text-4xl font-bold text-brand-text-dark-brown text-outline-white mb-12 text-center">Nuestro Catálogo</h1>
+
+      {/* 6. Reactivamos la barra de filtros */}
+      <div className="flex justify-center flex-wrap gap-4 mb-10">
+        <Link 
+          href={createFilterURL()}
+          className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${!selectedCategoryId ? 'bg-brand-primary text-white shadow-sm' : 'bg-brand-surface text-brand-text hover:bg-gray-100'}`}
+        >
+          Todos
+        </Link>
+        {categories?.map((category) => (
+          <Link
+            key={category.id}
+            href={createFilterURL(category.id.toString())}
+            className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${selectedCategoryId === String(category.id) ? 'bg-brand-primary text-white shadow-sm' : 'bg-brand-surface text-brand-text hover:bg-gray-100'}`}
+          >
+            {category.name}
+          </Link>
+        ))}
+      </div>
 
       {products && products.length > 0 ? (
         <>
