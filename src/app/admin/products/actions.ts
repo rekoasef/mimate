@@ -1,7 +1,7 @@
 // src/app/admin/products/actions.ts
 'use server'
 
-import { createServerClient } from '@supabase/ssr' // Importación actualizada
+import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 
@@ -11,7 +11,7 @@ export async function upsertProduct(formData: FormData) {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     { cookies: { get: (name) => cookieStore.get(name)?.value } }
-  ) // Nueva forma de crear el cliente
+  )
   
   const id = formData.get('id') as string | null;
   const name = formData.get('name') as string
@@ -39,7 +39,18 @@ export async function upsertProduct(formData: FormData) {
     if (current_image_url) {
         await supabase.storage.from('product_images').remove([current_image_url]);
     }
-    const { data: imageData, error: uploadError } = await supabase.storage.from('product_images').upload(`${Date.now()}_${image.name}`, image);
+
+    // --- CORRECCIÓN AQUÍ: SANITIZACIÓN DEL NOMBRE ---
+    // 1. Reemplaza espacios con guiones
+    // 2. Elimina caracteres que no sean letras, números, puntos o guiones
+    const cleanName = image.name.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9.\-_]/g, '');
+    const fileName = `${Date.now()}_${cleanName}`;
+    // ------------------------------------------------
+
+    const { data: imageData, error: uploadError } = await supabase.storage
+      .from('product_images')
+      .upload(fileName, image); // Usamos el nombre limpio
+
     if (uploadError) {
       console.error('Error uploading image:', uploadError);
       return { error: 'Error al subir la nueva imagen.' };
@@ -69,7 +80,7 @@ export async function deleteProduct(formData: FormData) {
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       { cookies: { get: (name) => cookieStore.get(name)?.value } }
-    ) // Nueva forma de crear el cliente
+    )
 
     if (imageUrl) {
         await supabase.storage.from('product_images').remove([imageUrl]);
