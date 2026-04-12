@@ -3,8 +3,7 @@ import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { ReactNode } from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
+import Sidebar from './_components/Sidebar'
 import LogoutButton from './logoutButton'
 
 export const dynamic = 'force-dynamic'
@@ -23,26 +22,19 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   }
 
   return (
-    <div className="flex min-h-screen bg-brand-bg text-brand-text">
-      <aside className="w-64 bg-brand-surface p-4 border-r border-gray-200">
-        <div className="mb-8">
-          <Link href="/admin">
-            <Image src="/logo.png" alt="Logo Mimate" width={200} height={150} priority />
-          </Link>
-        </div>
-        <nav>
-          <ul className="space-y-2">
-            <li><Link href="/admin" className="block p-2 rounded hover:bg-brand-bg">Dashboard</Link></li>
-            <li><Link href="/admin/categories" className="block p-2 rounded hover:bg-brand-bg">Categorías</Link></li>
-            <li><Link href="/admin/products" className="block p-2 rounded hover:bg-brand-bg">Productos</Link></li>
-          </ul>
-        </nav>
-      </aside>
-      <div className="flex-1 flex flex-col">
-        <header className="flex justify-end items-center p-4 border-b border-gray-200 bg-brand-surface">
+    <div className="flex min-h-screen bg-gray-50 text-brand-text">
+      <Sidebar />
+
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Top bar */}
+        <header className="flex justify-between items-center px-8 py-3.5 bg-white border-b border-gray-200 sticky top-0 z-30">
+          <p className="text-sm text-gray-400 font-medium">
+            Panel de administración
+          </p>
           <LogoutButton />
         </header>
-        <main className="p-6">
+
+        <main className="flex-1 p-8">
           {children}
         </main>
       </div>

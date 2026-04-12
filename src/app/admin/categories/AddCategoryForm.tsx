@@ -1,22 +1,28 @@
-// src/app/admin/categories/AddCategoryForm.tsx
 'use client'
 
 import { addCategory } from './actions'
 
 export default function AddCategoryForm() {
   return (
-    <form action={addCategory} className="mb-8 p-4 border rounded-lg bg-brand-surface">
-      <h3 className="text-xl font-semibold mb-4 text-brand-text">Añadir Nueva Categoría</h3>
-      <input
-        type="text"
-        name="name"
-        placeholder="Nombre de la categoría"
-        required
-        className="w-full p-2 border border-brand-bg rounded-md text-brand-text"
-      />
-      <button type="submit" className="mt-2 px-4 py-2 bg-brand-primary rounded-md text-brand-text-light hover:bg-brand-primary/90">
-        Guardar
-      </button>
-    </form>
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+      <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">
+        Nueva categoría
+      </h3>
+      <form action={addCategory} className="space-y-3">
+        <input
+          type="text"
+          name="name"
+          placeholder="Ej: Imperial, Torpedo, Camionero..."
+          required
+          className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm text-brand-text placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary/40 focus:border-brand-primary transition-colors"
+        />
+        <button
+          type="submit"
+          className="w-full px-5 py-2.5 bg-brand-primary text-white text-sm font-semibold rounded-xl hover:bg-brand-primary/90 transition-colors"
+        >
+          Agregar categoría
+        </button>
+      </form>
+    </div>
   )
 }

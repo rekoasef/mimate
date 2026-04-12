@@ -4,15 +4,25 @@ import Image from 'next/image';
 
 export default function LoginPage() {
   return (
-    <div className="flex flex-col justify-center items-center h-screen p-4">
-      <div className="w-full max-w-md p-8 space-y-6 bg-brand-surface rounded-lg shadow-lg">
-        <div className="flex justify-center">
-            {/* Usamos el logo principal aquí. Si tuvieras una versión oscura, 
-                podrías cambiar el 'src' dependiendo del tema. 
-            */}
-            <Image src="/logo.png" alt="Mimate Logo" width={180} height={60} />
+    <div className="min-h-screen bg-brand-bg flex items-center justify-center p-4">
+      <div className="w-full max-w-sm">
+        {/* Logo */}
+        <div className="flex justify-center mb-8">
+          <Image src="/logo.png" alt="Mimate" width={180} height={65} priority />
         </div>
-        <LoginForm />
+
+        {/* Card */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+          <div className="mb-6">
+            <h1 className="text-xl font-bold text-brand-secondary">Bienvenido</h1>
+            <p className="text-sm text-gray-400 mt-1">Ingresá para acceder al panel</p>
+          </div>
+          <LoginForm />
+        </div>
+
+        <p className="text-center text-xs text-gray-400 mt-6">
+          Mimate — Panel de administración
+        </p>
       </div>
     </div>
   );
