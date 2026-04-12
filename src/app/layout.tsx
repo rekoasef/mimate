@@ -1,35 +1,40 @@
 // src/app/layout.tsx
 import './globals.css'
 import type { Metadata } from 'next'
-// 1. Asegúrate que las fuentes sean las correctas (Fredoka)
-import { Montserrat, Fredoka } from 'next/font/google' 
+import { Montserrat, Fredoka } from 'next/font/google'
 
 const montserrat = Montserrat({ subsets: ['latin'], variable: '--font-montserrat' })
-const fredoka = Fredoka({ 
-  subsets: ['latin'], 
+const fredoka = Fredoka({
+  subsets: ['latin'],
   weight: '400',
-  variable: '--font-fredoka' 
-}) 
+  variable: '--font-fredoka',
+})
 
 export const metadata: Metadata = {
-  title: 'Mimate',
-  description: 'Catálogo de productos Mimate',
-  // --- ¡ESTA ES LA LÍNEA CRÍTICA QUE ARREGLA EL MÓVIL! ---
+  title: {
+    default: 'Mimate | Mates artesanales únicos',
+    template: '%s | Mimate',
+  },
+  description:
+    'Descubrí nuestra colección de mates artesanales. Seleccionados con cuidado y amor, para acompañarte en cada momento.',
+  keywords: ['mate', 'mates', 'mates artesanales', 'comprar mate', 'mimate'],
+  openGraph: {
+    title: 'Mimate | Mates artesanales únicos',
+    description:
+      'Descubrí nuestra colección de mates artesanales. Seleccionados con cuidado y amor.',
+    type: 'website',
+    locale: 'es_AR',
+    siteName: 'Mimate',
+  },
   viewport: 'width=device-width, initial-scale=1',
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
-      {/* Este body define el fondo claro (bg-brand-bg) por defecto.
-        Esto se aplicará al Panel de Admin y al Login.
-        El layout público (siguiente archivo) sobreescribirá esto.
-      */}
-      <body className={`${montserrat.variable} ${fredoka.variable} font-sans bg-brand-bg text-brand-text`}>
+      <body
+        className={`${montserrat.variable} ${fredoka.variable} font-sans bg-brand-bg text-brand-text`}
+      >
         {children}
       </body>
     </html>

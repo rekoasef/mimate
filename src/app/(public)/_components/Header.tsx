@@ -4,22 +4,40 @@ import Link from 'next/link';
 
 export default function Header() {
   return (
-    // CAMBIO: Opacidad reducida de bg-brand-bg/80 a bg-brand-bg/50
-    <header className="bg-brand-bg/5 backdrop-blur-sm sticky top-0 z-40 shadow-sm">
-      <div className="container mx-auto px-6 py-1 flex justify-between items-center border-b border-gray-200/30"> {/* Borde aún más sutil */}
-        <Link href="/">
+    <header className="bg-black/20 backdrop-blur-md border-b border-white/10 sticky top-0 z-40">
+      <div className="container mx-auto px-6 py-2 flex justify-between items-center">
+        <Link href="/" className="shrink-0">
           <Image
-            src="/logo.png" // Asegúrate que esta ruta sea correcta
+            src="/logo.png"
             alt="Mimate Logo"
-            width={250}
-            height={180}
+            width={220}
+            height={160}
             priority
+            className="h-auto"
           />
         </Link>
-        {/* Asegúrate que el color de texto siga contrastando */}
-        <nav className="space-x-8 font-semibold text-sm tracking-wider uppercase text-white">
-          <Link href="/" className="hover:text-brand-primary transition-colors">Inicio</Link>
-          <Link href="/catalogo" className="hover:text-brand-primary transition-colors">Catálogo</Link>
+
+        <nav className="flex items-center gap-6 lg:gap-8">
+          <Link
+            href="/"
+            className="font-semibold text-sm tracking-wider uppercase text-white/80 hover:text-white transition-colors"
+          >
+            Inicio
+          </Link>
+          <Link
+            href="/catalogo"
+            className="font-semibold text-sm tracking-wider uppercase text-white/80 hover:text-white transition-colors"
+          >
+            Catálogo
+          </Link>
+          <a
+            href="https://wa.me/543471339026?text=¡Hola! Quisiera consultar sobre sus productos."
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:inline-flex items-center gap-1.5 bg-green-500 hover:bg-green-600 text-white text-xs font-bold px-4 py-2 rounded-full transition-all hover:scale-105"
+          >
+            WhatsApp
+          </a>
         </nav>
       </div>
     </header>

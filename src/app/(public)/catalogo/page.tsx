@@ -1,116 +1,164 @@
 // src/app/(public)/catalogo/page.tsx
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import { Suspense } from 'react';
 import ProductCard from '../_components/ProductCard';
 import PaginationControls from '../_components/PaginationControls';
-import Link from 'next/link';
+import CatalogFilters from '../_components/CatalogFilters';
+import SearchBar from '../_components/SearchBar';
 
 export const dynamic = 'force-dynamic';
 
-function getPublicUrl(path: string | null) {
+export const metadata = {
+  title: 'Catálogo | Mimate',
+  description: 'Explorá nuestra colección completa de mates artesanales. Encontrá el mate perfecto para vos.',
+};
+
+function getPublicUrl(path: string | null, supabaseUrl: string) {
   if (!path) return '/placeholder.png';
-  const cookieStore = cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { cookies: { get: (name) => cookieStore.get(name)?.value } }
-  );
-  const { data } = supabase.storage.from('product_images').getPublicUrl(path);
-  return data.publicUrl;
+  return `${supabaseUrl}/storage/v1/object/public/product_images/${path}`;
 }
 
-export default async function CatalogoPage({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
+type SearchParams = { [key: string]: string | string[] | undefined };
+
+function str(val: string | string[] | undefined): string {
+  return typeof val === 'string' ? val : '';
+}
+
+export default async function CatalogoPage({ searchParams }: { searchParams: SearchParams }) {
   const cookieStore = cookies();
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    supabaseUrl,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     { cookies: { get: (name) => cookieStore.get(name)?.value } }
   );
-  
-  // 1. Leemos los parámetros de la URL
-  const page = Number(searchParams['page'] ?? '1');
-  const pageSize = 8;
+
+  // --- Parse params ---
+  const page = Math.max(1, Number(str(searchParams['page']) || '1'));
+  const pageSize = 9; // 3 columns × 3 rows looks great
   const offset = (page - 1) * pageSize;
-  const selectedCategoryId = searchParams['categoria'] as string | undefined;
 
-  // 2. Obtenemos la lista de categorías para los botones de filtro
-  const { data: categories } = await supabase.from('categories').select('id, name');
+  const selectedCategoryId = str(searchParams['categoria']);
+  const searchQuery = str(searchParams['q']);
+  const minPrice = str(searchParams['min_price']);
+  const maxPrice = str(searchParams['max_price']);
+  const sortParam = str(searchParams['sort']);
+  const onlyFeatured = searchParams['destacados'] === '1';
 
-  // 3. Construimos la consulta de productos dinámicamente
+  // --- Fetch categories ---
+  const { data: categories } = await supabase
+    .from('categories')
+    .select('id, name')
+    .order('name');
+
+  // --- Build product query ---
   let query = supabase
     .from('products')
-    .select('id, name, sale_price, image_url', { count: 'exact' })
+    .select('id, name, sale_price, image_url, is_featured, stock', { count: 'exact' })
     .eq('is_visible', true);
 
-  // ¡Añadimos el filtro de categoría si está seleccionado!
   if (selectedCategoryId) {
     query = query.eq('category_id', selectedCategoryId);
   }
+  if (searchQuery) {
+    query = query.ilike('name', `%${searchQuery}%`);
+  }
+  if (minPrice) {
+    query = query.gte('sale_price', Number(minPrice));
+  }
+  if (maxPrice) {
+    query = query.lte('sale_price', Number(maxPrice));
+  }
+  if (onlyFeatured) {
+    query = query.eq('is_featured', true);
+  }
 
-  // 4. Ejecutamos la consulta final con el orden y la paginación
-  const { data: products, count } = await query
-    .order('created_at', { ascending: false })
-    .range(offset, offset + pageSize - 1);
-  
+  // --- Sort ---
+  if (sortParam === 'price_asc') {
+    query = query.order('sale_price', { ascending: true });
+  } else if (sortParam === 'price_desc') {
+    query = query.order('sale_price', { ascending: false });
+  } else {
+    query = query.order('created_at', { ascending: false });
+  }
+
+  const { data: products, count } = await query.range(offset, offset + pageSize - 1);
+
   const totalProducts = count ?? 0;
   const totalPages = Math.ceil(totalProducts / pageSize);
   const hasNextPage = page < totalPages;
   const hasPrevPage = page > 1;
 
-  // 5. Función para crear URLs de filtro (mantiene la paginación si existe)
-  const createFilterURL = (categoryId?: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('page', '1'); // Reiniciamos a la pág 1 al cambiar de filtro
-    if (categoryId) {
-      params.set('categoria', categoryId);
-    } else {
-      params.delete('categoria');
-    }
-    return `/catalogo?${params.toString()}`;
-  };
-
   return (
-    <div className="container mx-auto px-6 py-12">
-      <h1 className="font-serif text-4xl font-bold text-brand-text-dark-brown text-outline-white mb-12 text-center">Nuestro Catálogo</h1>
-
-      {/* 6. Reactivamos la barra de filtros */}
-      <div className="flex justify-center flex-wrap gap-4 mb-10">
-        <Link 
-          href={createFilterURL()}
-          className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${!selectedCategoryId ? 'bg-brand-primary text-white shadow-sm' : 'bg-brand-surface text-brand-text hover:bg-gray-100'}`}
-        >
-          Todos
-        </Link>
-        {categories?.map((category) => (
-          <Link
-            key={category.id}
-            href={createFilterURL(category.id.toString())}
-            className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${selectedCategoryId === String(category.id) ? 'bg-brand-primary text-white shadow-sm' : 'bg-brand-surface text-brand-text hover:bg-gray-100'}`}
-          >
-            {category.name}
-          </Link>
-        ))}
+    <div className="py-8">
+      {/* Header */}
+      <div className="mb-8 text-center">
+        <h1 className="font-serif text-4xl md:text-5xl font-bold text-brand-text-dark-brown text-outline-white mb-3">
+          Nuestro Catálogo
+        </h1>
+        <p className="text-white/70 text-base">
+          Encontrá el mate perfecto para vos
+        </p>
       </div>
 
-      {products && products.length > 0 ? (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-16">
-            {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                id={product.id}
-                name={product.name}
-                price={product.sale_price}
-                imageUrl={getPublicUrl(product.image_url)}
-              />
-            ))}
-          </div>
-          
-          <PaginationControls hasNextPage={hasNextPage} hasPrevPage={hasPrevPage} />
-        </>
-      ) : (
-        <p className="text-center text-white/80">No se encontraron productos.</p> 
-      )}
+      {/* Search bar */}
+      <div className="mb-8 max-w-xl mx-auto">
+        <Suspense fallback={null}>
+          <SearchBar initialValue={searchQuery} />
+        </Suspense>
+      </div>
+
+      {/* Filters + Grid */}
+      <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
+
+        {/* Filters: desktop sidebar + mobile drawer */}
+        <Suspense fallback={null}>
+          <CatalogFilters categories={categories ?? []} />
+        </Suspense>
+
+        {/* Main content */}
+        <div className="flex-1 min-w-0 w-full">
+
+          {/* Result count */}
+          <p className="text-white/60 text-sm mb-5">
+            {totalProducts === 0
+              ? 'No se encontraron productos'
+              : `${totalProducts} producto${totalProducts !== 1 ? 's' : ''} encontrado${totalProducts !== 1 ? 's' : ''}`}
+          </p>
+
+          {products && products.length > 0 ? (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+                {products.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    id={product.id}
+                    name={product.name}
+                    price={product.sale_price}
+                    imageUrl={getPublicUrl(product.image_url, supabaseUrl)}
+                    isFeatured={product.is_featured}
+                    stock={product.stock}
+                  />
+                ))}
+              </div>
+
+              <Suspense fallback={null}>
+                <PaginationControls
+                  hasNextPage={hasNextPage}
+                  hasPrevPage={hasPrevPage}
+                  currentPage={page}
+                />
+              </Suspense>
+            </>
+          ) : (
+            <div className="text-center py-20">
+              <p className="text-white/60 text-lg">No se encontraron productos.</p>
+              <p className="text-white/40 text-sm mt-2">Probá ajustando los filtros o la búsqueda.</p>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

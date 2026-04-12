@@ -1,44 +1,45 @@
-// src/app/(public)/_components/PaginationControls.tsx
 'use client'
 
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation';
 
 interface PaginationControlsProps {
   hasNextPage: boolean;
   hasPrevPage: boolean;
+  currentPage: number;
 }
 
-export default function PaginationControls({ hasNextPage, hasPrevPage }: PaginationControlsProps) {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const page = searchParams.get('page') ?? '1'
-  const per_page = searchParams.get('per_page') ?? '8'
+export default function PaginationControls({ hasNextPage, hasPrevPage, currentPage }: PaginationControlsProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const navigate = (newPage: number) => {
+    // Preserve all existing params — only replace 'page'
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', String(newPage));
+    router.push(`/catalogo?${params.toString()}`);
+  };
 
   return (
     <div className="flex gap-4 justify-center items-center mt-12">
       <button
-        className="bg-brand-surface border border-gray-200 text-brand-text py-2 px-4 rounded-md disabled:opacity-50"
+        className="bg-white/10 backdrop-blur-sm border border-white/20 text-white py-2.5 px-5 rounded-xl font-semibold text-sm disabled:opacity-30 hover:bg-white/20 transition-colors"
         disabled={!hasPrevPage}
-        onClick={() => {
-          router.push(`/catalogo?page=${Number(page) - 1}`)
-        }}
+        onClick={() => navigate(currentPage - 1)}
       >
         ‹ Anterior
       </button>
 
-      <div className="text-sm">
-        Página {page}
+      <div className="text-sm text-white/70 font-medium px-2">
+        Página {currentPage}
       </div>
 
       <button
-        className="bg-brand-surface border border-gray-200 text-brand-text py-2 px-4 rounded-md disabled:opacity-50"
+        className="bg-white/10 backdrop-blur-sm border border-white/20 text-white py-2.5 px-5 rounded-xl font-semibold text-sm disabled:opacity-30 hover:bg-white/20 transition-colors"
         disabled={!hasNextPage}
-        onClick={() => {
-          router.push(`/catalogo?page=${Number(page) + 1}`)
-        }}
+        onClick={() => navigate(currentPage + 1)}
       >
         Siguiente ›
       </button>
     </div>
-  )
+  );
 }
