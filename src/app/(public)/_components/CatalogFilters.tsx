@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { FiFilter, FiX } from 'react-icons/fi';
 
@@ -16,13 +16,28 @@ export default function CatalogFilters({ categories }: CatalogFiltersProps) {
   const searchParams = useSearchParams();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  // URL-driven state (instant apply)
   const selectedCategory = searchParams.get('categoria') || '';
-  const minPrice = searchParams.get('min_price') || '';
-  const maxPrice = searchParams.get('max_price') || '';
   const sort = searchParams.get('sort') || '';
   const featured = searchParams.get('destacados') === '1';
 
-  const hasFilters = !!(selectedCategory || minPrice || maxPrice || sort || featured);
+  // Local state for price — only pushed to URL on blur/Enter
+  const [localMin, setLocalMin] = useState(searchParams.get('min_price') || '');
+  const [localMax, setLocalMax] = useState(searchParams.get('max_price') || '');
+
+  // Keep local price in sync when URL changes externally (e.g. "limpiar filtros")
+  useEffect(() => {
+    setLocalMin(searchParams.get('min_price') || '');
+    setLocalMax(searchParams.get('max_price') || '');
+  }, [searchParams]);
+
+  const hasFilters = !!(
+    selectedCategory ||
+    searchParams.get('min_price') ||
+    searchParams.get('max_price') ||
+    sort ||
+    featured
+  );
 
   const updateParam = useCallback(
     (key: string, value: string) => {
@@ -38,13 +53,34 @@ export default function CatalogFilters({ categories }: CatalogFiltersProps) {
     [router, pathname, searchParams]
   );
 
+  const applyPriceRange = useCallback(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', '1');
+
+    if (localMin) {
+      params.set('min_price', localMin);
+    } else {
+      params.delete('min_price');
+    }
+    if (localMax) {
+      params.set('max_price', localMax);
+    } else {
+      params.delete('max_price');
+    }
+    router.push(`${pathname}?${params.toString()}`);
+  }, [router, pathname, searchParams, localMin, localMax]);
+
   const clearAll = useCallback(() => {
+    setLocalMin('');
+    setLocalMax('');
     router.push(pathname);
     setDrawerOpen(false);
   }, [router, pathname]);
 
-  const FilterContent = () => (
+  // ── Shared filter JSX (inlined, not a nested component) ──
+  const filterBody = (
     <div className="space-y-7">
+
       {/* Sort */}
       <div>
         <h3 className="text-white font-bold text-xs uppercase tracking-widest mb-3 opacity-70">
@@ -104,19 +140,24 @@ export default function CatalogFilters({ categories }: CatalogFiltersProps) {
           <input
             type="number"
             placeholder="Mín $"
-            value={minPrice}
-            onChange={(e) => updateParam('min_price', e.target.value)}
+            value={localMin}
+            onChange={(e) => setLocalMin(e.target.value)}
+            onBlur={applyPriceRange}
+            onKeyDown={(e) => e.key === 'Enter' && applyPriceRange()}
             className="w-full bg-white/10 text-white placeholder-white/40 border border-white/20 rounded-xl p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary"
           />
           <span className="text-white/40 shrink-0">—</span>
           <input
             type="number"
             placeholder="Máx $"
-            value={maxPrice}
-            onChange={(e) => updateParam('max_price', e.target.value)}
+            value={localMax}
+            onChange={(e) => setLocalMax(e.target.value)}
+            onBlur={applyPriceRange}
+            onKeyDown={(e) => e.key === 'Enter' && applyPriceRange()}
             className="w-full bg-white/10 text-white placeholder-white/40 border border-white/20 rounded-xl p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary"
           />
         </div>
+        <p className="text-white/30 text-xs mt-2">Presioná Enter o hacé click afuera para aplicar</p>
       </div>
 
       {/* Featured toggle */}
@@ -159,7 +200,7 @@ export default function CatalogFilters({ categories }: CatalogFiltersProps) {
 
   return (
     <>
-      {/* ── Mobile: filter trigger button ── */}
+      {/* ── Mobile: trigger button ── */}
       <div className="lg:hidden">
         <button
           onClick={() => setDrawerOpen(true)}
@@ -192,19 +233,17 @@ export default function CatalogFilters({ categories }: CatalogFiltersProps) {
               </button>
             )}
           </div>
-          <FilterContent />
+          {filterBody}
         </div>
       </aside>
 
-      {/* ── Mobile: full-screen drawer ── */}
+      {/* ── Mobile: drawer ── */}
       {drawerOpen && (
         <div className="lg:hidden fixed inset-0 z-[60] flex">
-          {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setDrawerOpen(false)}
           />
-          {/* Drawer panel */}
           <div className="relative ml-auto w-80 max-w-[90vw] bg-brand-secondary h-full overflow-y-auto p-6 shadow-2xl">
             <div className="flex items-center justify-between mb-7">
               <h2 className="text-white font-bold text-xl">Filtros</h2>
@@ -215,7 +254,7 @@ export default function CatalogFilters({ categories }: CatalogFiltersProps) {
                 <FiX size={22} />
               </button>
             </div>
-            <FilterContent />
+            {filterBody}
             <button
               onClick={() => setDrawerOpen(false)}
               className="mt-8 w-full bg-brand-primary hover:bg-opacity-90 text-white py-3.5 rounded-xl font-bold text-base transition-colors"
